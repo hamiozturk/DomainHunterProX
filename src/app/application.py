@@ -1,4 +1,12 @@
+"""
+DomainHunter Pro X
+
+Application
+"""
+
 from PySide6.QtWidgets import QApplication
+
+from src.ui.styles import MAIN_STYLE
 
 
 class Application(QApplication):
@@ -11,3 +19,6 @@ class Application(QApplication):
         self.setApplicationName("DomainHunter Pro X")
         self.setApplicationVersion("0.1.0-alpha")
         self.setOrganizationName("Hami Software")
+
+        # Global Theme
+        self.setStyleSheet(MAIN_STYLE)
