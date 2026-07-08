@@ -3,3 +3,7 @@
 2026-07-08 16:48:25.481 | SUCCESS  | __main__:<module>:5 - Logger Works
 2026-07-08 16:48:25.481 | WARNING  | __main__:<module>:7 - Warning Test
 2026-07-08 16:48:25.481 | ERROR    | __main__:<module>:9 - Error Test
+2026-07-08 17:01:20.912 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 17:01:20.914 | INFO     | src.config.config_manager:save:78 - Configuration saved.
+2026-07-08 17:01:20.914 | SUCCESS  | src.config.config_manager:load:60 - Default configuration created.
+2026-07-08 17:01:20.915 | INFO     | src.config.config_manager:save:78 - Configuration saved.

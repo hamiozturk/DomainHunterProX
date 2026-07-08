@@ -1,0 +1,20 @@
+{
+  "app": {
+    "name": "DomainHunter Pro X",
+    "version": "0.1.0-alpha",
+    "theme": "light",
+    "language": "en"
+  },
+  "scanner": {
+    "timeout": 5,
+    "workers": 100
+  },
+  "generator": {
+    "default_length": 5,
+    "default_tld": ".com"
+  },
+  "window": {
+    "width": 1400,
+    "height": 900
+  }
+}
