@@ -6,8 +6,7 @@ engine = GeneratorEngine(
 
     tlds=[
         ".com",
-        ".net",
-        ".cat",
+        ".cat"
     ]
 
 )
@@ -16,13 +15,17 @@ count = 0
 
 for domain in engine.generate():
 
-    print(domain)
+    print(
+
+        domain.fqdn,
+
+        domain.pattern,
+
+        domain.length
+
+    )
 
     count += 1
 
-    if count == 20:
+    if count == 15:
         break
-
-print()
-
-print("Generated:", count)

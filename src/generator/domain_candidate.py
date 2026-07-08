@@ -1,0 +1,9 @@
+DomainCandidate(
+    name="abc",
+    tld=".com",
+    fqdn="abc.com",
+    length=3,
+    pattern="VCC",
+    has_number=False,
+    has_hyphen=False,
+)
