@@ -16,5 +16,8 @@
   "window": {
     "width": 1400,
     "height": 900
+  },
+  "ui": {
+  "sidebar_width": 230
   }
 }

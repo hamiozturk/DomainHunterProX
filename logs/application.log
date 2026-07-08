@@ -24,3 +24,14 @@
 2026-07-08 17:41:01.018 | SUCCESS  | src.database.database:__init__:29 - Database connected.
 2026-07-08 17:41:01.020 | SUCCESS  | src.database.database:create_tables:64 - Database tables checked.
 2026-07-08 17:41:01.260 | SUCCESS  | src.app.bootstrap:bootstrap:25 - Application started successfully.
+2026-07-08 17:49:22.009 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 17:50:29.811 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 17:51:32.764 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 17:55:04.610 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 17:59:05.005 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 18:00:07.013 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 18:00:07.267 | INFO     | src.app.bootstrap:bootstrap:13 - Starting application...
+2026-07-08 18:00:07.270 | INFO     | src.config.config_manager:load:66 - Configuration loaded.
+2026-07-08 18:00:07.271 | SUCCESS  | src.database.database:__init__:29 - Database connected.
+2026-07-08 18:00:07.272 | SUCCESS  | src.database.database:create_tables:64 - Database tables checked.
+2026-07-08 18:00:07.655 | SUCCESS  | src.app.bootstrap:bootstrap:25 - Application started successfully.
