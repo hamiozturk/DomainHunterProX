@@ -1,0 +1,5 @@
+2026-07-08 16:48:25.479 | INFO     | src.logger.logger:<module>:34 - DomainHunter Pro X Logger initialized.
+2026-07-08 16:48:25.480 | INFO     | __main__:<module>:3 - Application Started
+2026-07-08 16:48:25.481 | SUCCESS  | __main__:<module>:5 - Logger Works
+2026-07-08 16:48:25.481 | WARNING  | __main__:<module>:7 - Warning Test
+2026-07-08 16:48:25.481 | ERROR    | __main__:<module>:9 - Error Test
