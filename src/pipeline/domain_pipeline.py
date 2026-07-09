@@ -1,6 +1,6 @@
 from src.services.domain_factory import DomainFactory
 from src.scorer import DomainScorer
-from src.checker.rdap import RDAPChecker
+from src.checker import CheckerManager
 
 
 class DomainPipeline:
@@ -9,6 +9,7 @@ class DomainPipeline:
         self,
         min_score: int = 0,
         check_availability: bool = True,
+        checker: str = "rdap",
     ):
 
         self.min_score = min_score
@@ -16,7 +17,7 @@ class DomainPipeline:
 
         self.factory = DomainFactory()
         self.scorer = DomainScorer()
-        self.checker = RDAPChecker()
+        self.checker = CheckerManager(checker)
 
 
     def process(self, candidate):
