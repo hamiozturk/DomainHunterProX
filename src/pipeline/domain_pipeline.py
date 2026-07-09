@@ -5,11 +5,19 @@ from src.checker.rdap import RDAPChecker
 
 class DomainPipeline:
 
-    def __init__(self):
+    def __init__(
+        self,
+        min_score: int = 0,
+        check_availability: bool = True,
+    ):
+
+        self.min_score = min_score
+        self.check_availability = check_availability
 
         self.factory = DomainFactory()
         self.scorer = DomainScorer()
         self.checker = RDAPChecker()
+
 
     def process(self, candidate):
 
@@ -17,6 +25,12 @@ class DomainPipeline:
 
         self.scorer.calculate(domain)
 
-        self.checker.check(domain)
+        # Skoru düşükse devam etme
+        if domain.score < self.min_score:
+            return None
+
+        # RDAP isteği opsiyonel
+        if self.check_availability:
+            self.checker.check(domain)
 
         return domain
