@@ -33,66 +33,43 @@ class DomainScorer:
 
 
 
-    def calculate(self, domain, pattern=None):
+    def calculate(self, domain: Domain) -> None:
 
-        name = domain.split(".")[0].lower()
+        name = domain.sld
+        pattern = domain.pattern
 
         score = 0
 
-
-        # uzunluk
-
-        if len(name)==2:
+        if len(name) == 2:
             score += 50
 
-        elif len(name)==3:
+        elif len(name) == 3:
             score += 35
 
-        elif len(name)==4:
+        elif len(name) == 4:
             score += 20
-
-
-
-        # harf kalitesi
 
         for c in name:
 
-            score += self.LETTER_VALUES.get(c,4)
+            score += self.LETTER_VALUES.get(c, 4)
+            score += self.BAD_LETTERS.get(c, 0)
 
-            score += self.BAD_LETTERS.get(c,0)
+        if pattern == "VV":
+            score += 20
 
+        elif pattern in ("VC", "CV"):
+            score += 15
 
+        elif pattern == "CC":
+            score += 5
 
-        # pattern
+        if len(set(name)) == 1:
+            score += 15
 
-        if pattern:
+        if domain.extension == ".com":
+            score += 15
 
-            if pattern=="VV":
-                score +=20
+        elif domain.extension == ".cat":
+            score += 5
 
-            elif pattern=="VC" or pattern=="CV":
-                score +=15
-
-            elif pattern=="CC":
-                score +=5
-
-
-
-        # çift harf
-
-        if len(set(name))==1:
-            score +=15
-
-
-
-        # uzantı
-
-        if domain.endswith(".com"):
-            score +=15
-
-        elif domain.endswith(".cat"):
-            score +=5
-
-
-
-        return min(score,100)
+        domain.set_score(min(score, 100))
