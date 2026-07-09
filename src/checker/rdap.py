@@ -1,36 +1,26 @@
-import requests
-
+from src.models import Domain
 from .providers import RDAP_PROVIDERS
-from .result import DomainResult
-
 from config import RDAP_TIMEOUT
 
+import requests
 
 
 class RDAPChecker:
 
+    def check(self, domain: Domain) -> None:
 
-    def check(self, domain):
-
-        tld = domain.split(".")[-1]
-
+        tld = domain.extension.replace(".", "")
 
         if tld not in RDAP_PROVIDERS:
 
-            return DomainResult(
-                domain,
-                False,
-                "RDAP",
-                "UNSUPPORTED_TLD"
+            domain.set_availability(
+                available=False,
+                status="UNSUPPORTED_TLD",
+                method="RDAP"
             )
+            return
 
-
-        url = (
-            RDAP_PROVIDERS[tld]
-            +
-            domain
-        )
-
+        url = RDAP_PROVIDERS[tld] + domain.name
 
         try:
 
@@ -39,47 +29,38 @@ class RDAPChecker:
                 timeout=RDAP_TIMEOUT
             )
 
-
-            # 200 = kayıt var
-
             if response.status_code == 200:
 
-                return DomainResult(
-                    domain,
-                    False,
-                    "RDAP",
-                    "REGISTERED"
+                domain.set_availability(
+                    available=False,
+                    status="REGISTERED",
+                    method="RDAP",
+                    rdap_url=url
                 )
-
-
-            # 404 = bulunamadı
 
             elif response.status_code == 404:
 
-                return DomainResult(
-                    domain,
-                    True,
-                    "RDAP",
-                    "AVAILABLE"
+                domain.set_availability(
+                    available=True,
+                    status="AVAILABLE",
+                    method="RDAP",
+                    rdap_url=url
                 )
-
 
             else:
 
-                return DomainResult(
-                    domain,
-                    False,
-                    "RDAP",
-                    f"HTTP_{response.status_code}"
+                domain.set_availability(
+                    available=False,
+                    status=f"HTTP_{response.status_code}",
+                    method="RDAP",
+                    rdap_url=url
                 )
-
 
         except Exception as e:
 
-
-            return DomainResult(
-                domain,
-                False,
-                "RDAP",
-                str(e)
+            domain.set_availability(
+                available=False,
+                status=str(e),
+                method="RDAP",
+                rdap_url=url
             )
