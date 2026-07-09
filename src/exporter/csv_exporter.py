@@ -1,28 +1,66 @@
 import csv
 from pathlib import Path
 
+from src.models import Domain
+
 
 class CsvExporter:
 
-    def __init__(self):
-        Path("output").mkdir(exist_ok=True)
+    def __init__(self, filename: str):
 
-    def save(self, filename, rows):
+        self.filename = Path(filename)
 
-        with open(
-            f"output/{filename}",
-            "w",
+        self._initialized = False
+
+    def _initialize(self):
+
+        if self._initialized:
+            return
+
+        file_exists = self.filename.exists()
+
+        self.file = open(
+            self.filename,
+            "a",
             newline="",
             encoding="utf-8"
-        ) as f:
+        )
 
-            writer = csv.writer(f)
+        self.writer = csv.DictWriter(
+            self.file,
+            fieldnames=[
+                "domain",
+                "extension",
+                "length",
+                "pattern",
+                "score",
+                "available",
+                "status",
+                "method",
+                "checked_at",
+                "rdap_url"
+            ]
+        )
 
-            writer.writerow([
-                "Domain",
-                "Pattern",
-                "Length",
-                "Score"
-            ])
+        if not file_exists:
+            self.writer.writeheader()
 
-            writer.writerows(rows)
+        self._initialized = True
+
+    def write(self, domain: Domain):
+
+        self._initialize()
+
+        data = domain.to_dict()
+
+        # CSV'de sld istemiyoruz
+        data.pop("sld", None)
+
+        self.writer.writerow(data)
+
+        self.file.flush()
+
+    def close(self):
+
+        if self._initialized:
+            self.file.close()

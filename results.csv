@@ -1,0 +1,11 @@
+domain,extension,length,pattern,score,available,status,method,checked_at,rdap_url
+aa.com,.com,2,VV,100,False,REGISTERED,RDAP,2026-07-09 10:58:02.588957,https://rdap.verisign.com/com/v1/domain/aa.com
+ab.com,.com,2,VC,95,False,REGISTERED,RDAP,2026-07-09 10:58:02.746928,https://rdap.verisign.com/com/v1/domain/ab.com
+ac.com,.com,2,VC,96,False,REGISTERED,RDAP,2026-07-09 10:58:02.905736,https://rdap.verisign.com/com/v1/domain/ac.com
+ad.com,.com,2,VC,96,False,REGISTERED,RDAP,2026-07-09 10:58:03.059642,https://rdap.verisign.com/com/v1/domain/ad.com
+ae.com,.com,2,VV,100,False,REGISTERED,RDAP,2026-07-09 10:58:03.214113,https://rdap.verisign.com/com/v1/domain/ae.com
+af.com,.com,2,VC,94,False,REGISTERED,RDAP,2026-07-09 10:58:03.364054,https://rdap.verisign.com/com/v1/domain/af.com
+ag.com,.com,2,VC,94,False,REGISTERED,RDAP,2026-07-09 10:58:03.514143,https://rdap.verisign.com/com/v1/domain/ag.com
+ah.com,.com,2,VC,94,False,REGISTERED,RDAP,2026-07-09 10:58:03.979751,https://rdap.verisign.com/com/v1/domain/ah.com
+ai.com,.com,2,VV,100,False,REGISTERED,RDAP,2026-07-09 10:58:04.446224,https://rdap.verisign.com/com/v1/domain/ai.com
+aj.com,.com,2,VC,87,False,REGISTERED,RDAP,2026-07-09 10:58:04.671142,https://rdap.verisign.com/com/v1/domain/aj.com
