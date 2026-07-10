@@ -19,19 +19,57 @@ class DomainPipeline:
         self.scorer = DomainScorer()
         self.checker = CheckerManager(checker)
 
-
     def process(self, candidate):
+        """
+        Tek bir domain işler.
+        Geriye dönük uyumluluk korunur.
+        """
 
         domain = self.factory.from_candidate(candidate)
 
         self.scorer.calculate(domain)
 
-        # Skoru düşükse devam etme
         if domain.score < self.min_score:
             return None
 
-        # RDAP isteği opsiyonel
         if self.check_availability:
             self.checker.check(domain)
 
         return domain
+
+    def process_many(self, candidates):
+        """
+        Çoklu domain işleme.
+        RDAP ThreadPool'u burada kullanılır.
+        """
+
+        domains = []
+
+        # Domain oluştur + skorla
+        for candidate in candidates:
+
+            domain = self.factory.from_candidate(candidate)
+
+            self.scorer.calculate(domain)
+
+            if domain.score < self.min_score:
+                continue
+
+            domains.append(domain)
+
+        if not domains:
+            return []
+
+        # Toplu RDAP kontrolü
+        if self.check_availability:
+
+            if hasattr(self.checker.checker, "check_many"):
+
+                self.checker.checker.check_many(domains)
+
+            else:
+                # Eski checker'lar için fallback
+                for domain in domains:
+                    self.checker.check(domain)
+
+        return domains

@@ -1,10 +1,9 @@
-import sqlite3
 import os
+import sqlite3
 from datetime import datetime
 
 
 class RDAPCache:
-
 
     def __init__(
         self,
@@ -15,69 +14,74 @@ class RDAPCache:
 
         folder = os.path.dirname(db_path)
 
-        if folder and not os.path.exists(folder):
-            os.makedirs(folder)
-
-
-        self.conn = sqlite3.connect(
-            self.db_path,
-            check_same_thread=False
-        )
+        if folder:
+            os.makedirs(folder, exist_ok=True)
 
         self.create_table()
 
+    def _connect(self):
 
+        conn = sqlite3.connect(
+            self.db_path,
+            timeout=30
+        )
+
+        return conn
 
     def create_table(self):
 
-        query = """
-        CREATE TABLE IF NOT EXISTS rdap_cache (
+        with self._connect() as conn:
 
-            domain TEXT PRIMARY KEY,
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS rdap_cache (
 
-            available INTEGER,
+                    domain TEXT PRIMARY KEY,
 
-            status TEXT,
+                    available INTEGER,
 
-            checked_at TEXT
+                    status TEXT,
 
-        )
-        """
+                    checked_at TEXT
 
-        self.conn.execute(query)
+                )
+            """)
 
-        self.conn.commit()
-
-
+            conn.commit()
 
     def get(self, domain):
 
-        cursor = self.conn.cursor()
+        with self._connect() as conn:
 
+            cursor = conn.execute(
+                """
+                SELECT
+                    domain,
+                    available,
+                    status,
+                    checked_at
+                FROM rdap_cache
+                WHERE domain = ?
+                """,
+                (domain,)
+            )
 
-        cursor.execute(
-            """
-            SELECT domain, available, status, checked_at
-            FROM rdap_cache
-            WHERE domain=?
-            """,
-            (domain,)
-        )
+            row = cursor.fetchone()
 
-
-        row = cursor.fetchone()
-
-
-        if not row:
+        if row is None:
             return None
 
+        available = None
 
+        if row[1] == 1:
+            available = True
+        elif row[1] == 0:
+            available = False
 
         return {
 
             "domain": row[0],
 
-            "available": bool(row[1]),
+            "available": available,
 
             "status": row[2],
 
@@ -85,28 +89,36 @@ class RDAPCache:
 
         }
 
-
-
-
     def set(self, result):
 
-        self.conn.execute(
-            """
-            INSERT OR REPLACE INTO rdap_cache
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                result["domain"],
-                int(result["available"])
-                if result["available"] is not None
-                else -1,
+        if result["available"] is True:
+            available = 1
 
-                result["status"],
+        elif result["available"] is False:
+            available = 0
 
-                datetime.utcnow().isoformat()
+        else:
+            available = -1
 
+        with self._connect() as conn:
+
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO rdap_cache
+                (
+                    domain,
+                    available,
+                    status,
+                    checked_at
+                )
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    result["domain"],
+                    available,
+                    result["status"],
+                    datetime.utcnow().isoformat()
+                )
             )
-        )
 
-
-        self.conn.commit()
+            conn.commit()

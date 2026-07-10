@@ -30,6 +30,8 @@ class RDAPChecker:
         domain
     ):
 
+        print(type(domain), domain)
+
         start = time.time()
 
 

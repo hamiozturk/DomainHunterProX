@@ -9,7 +9,7 @@ generator = GeneratorEngine(
 
 pipeline = DomainPipeline(
     min_score=0,
-    check_availability=False,
+    check_availability=True,
     checker="rdap",
 )
 

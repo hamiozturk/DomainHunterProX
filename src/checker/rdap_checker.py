@@ -1,10 +1,7 @@
-import requests
-
-from config import RDAP_TIMEOUT
 from src.models import Domain
+from src.rdap import RDAPChecker as RDAPEngine
 
 from .base import BaseChecker
-from .providers import RDAP_PROVIDERS
 
 
 class RDAPChecker(BaseChecker):
@@ -13,66 +10,50 @@ class RDAPChecker(BaseChecker):
 
     def __init__(self):
 
-        self.session = requests.Session()
-
-        self.session.headers.update({
-            "User-Agent": "DomainHunterProX/1.0"
-        })
+        # RDAP Engine
+        self.engine = RDAPEngine(workers=10)
 
     def check(self, domain: Domain) -> None:
+        """
+        Tek bir domain kontrol eder.
+        Geriye dönük uyumluluk için korunuyor.
+        """
 
-        tld = domain.extension.replace(".", "")
+        result = self.engine.check_domain(domain.name)
 
-        if tld not in RDAP_PROVIDERS:
+        self._apply_result(domain, result)
 
-            domain.set_availability(
-                available=False,
-                status="UNSUPPORTED_TLD",
-                method="RDAP"
-            )
-            return
+    def check_many(self, domains: list[Domain]) -> list[Domain]:
+        """
+        Birden fazla domaini ThreadPool ile kontrol eder.
+        """
 
-        url = RDAP_PROVIDERS[tld] + domain.name
+        names = [d.name for d in domains]
 
-        try:
+        results = self.engine.check_domains(names)
 
-            response = self.session.get(
-                url,
-                timeout=RDAP_TIMEOUT
-            )
+        result_map = {
+            r["domain"]: r
+            for r in results
+        }
 
-            if response.status_code == 200:
+        for domain in domains:
 
-                domain.set_availability(
-                    available=False,
-                    status="REGISTERED",
-                    method="RDAP",
-                    rdap_url=url
-                )
+            result = result_map.get(domain.name)
 
-            elif response.status_code == 404:
+            if result:
+                self._apply_result(domain, result)
 
-                domain.set_availability(
-                    available=True,
-                    status="AVAILABLE",
-                    method="RDAP",
-                    rdap_url=url
-                )
+        return domains
 
-            else:
+    def _apply_result(
+        self,
+        domain: Domain,
+        result: dict
+    ) -> None:
 
-                domain.set_availability(
-                    available=False,
-                    status=f"HTTP_{response.status_code}",
-                    method="RDAP",
-                    rdap_url=url
-                )
-
-        except Exception as e:
-
-            domain.set_availability(
-                available=False,
-                status=str(e),
-                method="RDAP",
-                rdap_url=url
-            )
+        domain.set_availability(
+            available=result["available"],
+            status=result["status"].upper(),
+            method="RDAP"
+        )
