@@ -1,66 +1,52 @@
 import csv
-from pathlib import Path
+import os
 
-from src.models import Domain
+from .base import BaseExporter
 
 
-class CsvExporter:
+class CSVExporter(BaseExporter):
 
-    def __init__(self, filename: str):
+    def export(self, domains, filename):
 
-        self.filename = Path(filename)
+        folder = os.path.dirname(filename)
 
-        self._initialized = False
+        if folder:
+            os.makedirs(folder, exist_ok=True)
 
-    def _initialize(self):
-
-        if self._initialized:
-            return
-
-        file_exists = self.filename.exists()
-
-        self.file = open(
-            self.filename,
-            "a",
+        with open(
+            filename,
+            "w",
             newline="",
             encoding="utf-8"
-        )
+        ) as file:
 
-        self.writer = csv.DictWriter(
-            self.file,
-            fieldnames=[
+            writer = csv.writer(file)
+
+            writer.writerow([
                 "domain",
-                "extension",
-                "length",
-                "pattern",
                 "score",
                 "available",
                 "status",
                 "method",
-                "checked_at",
-                "rdap_url"
-            ]
-        )
+                "checked_at"
+            ])
 
-        if not file_exists:
-            self.writer.writeheader()
+            for domain in domains:
 
-        self._initialized = True
+                writer.writerow([
 
-    def write(self, domain: Domain):
+                    domain.name,
 
-        self._initialize()
+                    domain.score,
 
-        data = domain.to_dict()
+                    domain.available,
 
-        # CSV'de sld istemiyoruz
-        data.pop("sld", None)
+                    domain.check_status,
 
-        self.writer.writerow(data)
+                    domain.check_method,
 
-        self.file.flush()
+                    domain.checked_at
 
-    def close(self):
+                ])
 
-        if self._initialized:
-            self.file.close()
+        return filename

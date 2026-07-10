@@ -1,5 +1,5 @@
-from .csv_exporter import CsvExporter
+from .csv_exporter import CSVExporter
 
 __all__ = [
-    "CsvExporter",
+    "CSVExporter",
 ]

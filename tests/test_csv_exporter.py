@@ -1,33 +1,43 @@
 from src.generator import GeneratorEngine
 from src.pipeline import DomainPipeline
-from src.exporter import CsvExporter
+from src.exporter import CSVExporter
 
 
-generator = GeneratorEngine(
-    length=2,
-    tlds=[".com"]
-)
+def test_csv_exporter():
 
-pipeline = DomainPipeline()
+    generator = GeneratorEngine(
+        length=2,
+        tlds=[".com"]
+    )
 
-exporter = CsvExporter("results.csv")
+    pipeline = DomainPipeline(
+        min_score=90,
+        check_availability=True,
+        checker="rdap"
+    )
 
-count = 0
+    candidates = []
 
-for candidate in generator.generate():
+    for i, candidate in enumerate(generator.generate()):
 
-    domain = pipeline.process(candidate)
+        candidates.append(candidate)
 
-    if domain is None:
-        continue
+        if i == 19:
+            break
 
-    exporter.write(domain)
+    domains = pipeline.process_many(candidates)
 
-    count += 1
+    exporter = CSVExporter()
 
-    if count == 10:
-        break
+    filename = exporter.export(
+        domains,
+        "output/domains.csv"
+    )
 
-exporter.close()
+    print(f"\nCSV oluşturuldu: {filename}")
 
-print("10 domains exported.")
+    print(f"Toplam kayıt: {len(domains)}")
+
+
+if __name__ == "__main__":
+    test_csv_exporter()

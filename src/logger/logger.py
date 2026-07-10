@@ -1,34 +1,26 @@
-from pathlib import Path
-from loguru import logger
+import logging
 import sys
 
-APP_NAME = "DomainHunter Pro X"
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-LOG_DIR = BASE_DIR / "logs"
+def create_logger(name: str) -> logging.Logger:
 
-LOG_DIR.mkdir(parents=True, exist_ok=True)
+    logger = logging.getLogger(name)
 
-logger.remove()
+    if logger.handlers:
+        return logger
 
-logger.add(
-    sys.stdout,
-    level="INFO",
-    colorize=True,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-           "<level>{level: <8}</level> | "
-           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-           "<level>{message}</level>"
-)
+    logger.setLevel(logging.INFO)
 
-logger.add(
-    LOG_DIR / "application.log",
-    rotation="10 MB",
-    retention=20,
-    compression="zip",
-    level="DEBUG",
-    enqueue=True,
-    encoding="utf-8"
-)
+    formatter = logging.Formatter(
+        "[%(levelname)s] %(name)s - %(message)s"
+    )
 
-logger.info(f"{APP_NAME} Logger initialized.")
+    handler = logging.StreamHandler(sys.stdout)
+
+    handler.setFormatter(formatter)
+
+    logger.addHandler(handler)
+
+    logger.propagate = False
+
+    return logger
