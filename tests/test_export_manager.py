@@ -26,7 +26,7 @@ def test_csv_export():
 
     filename = "output/export_manager_test.csv"
 
-    exporter = ExportManager("csv")
+    exporter = ExportManager()
 
     exporter.export(create_domains(), filename)
 
@@ -39,7 +39,7 @@ def test_json_export():
 
     filename = "output/export_manager_test.json"
 
-    exporter = ExportManager("json")
+    exporter = ExportManager()
 
     exporter.export(create_domains(), filename)
 
@@ -55,10 +55,14 @@ def test_json_export():
     os.remove(filename)
 
 
-def test_invalid_exporter():
+def test_invalid_extension():
+
+    filename = "output/export_manager_test.xml"
+
+    exporter = ExportManager()
 
     try:
-        ExportManager("xml")
+        exporter.export(create_domains(), filename)
     except ValueError:
         return
 
@@ -68,9 +72,7 @@ def test_invalid_exporter():
 if __name__ == "__main__":
 
     test_csv_export()
-
     test_json_export()
-
-    test_invalid_exporter()
+    test_invalid_extension()
 
     print("ExportManager tests passed.")

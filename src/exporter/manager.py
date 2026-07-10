@@ -1,20 +1,27 @@
+import os
+
 from .csv_exporter import CSVExporter
 from .json_exporter import JSONExporter
 
 
 class ExportManager:
 
-    def __init__(self, exporter: str = "csv"):
+    def __init__(self):
 
         self._exporters = {
-            "csv": CSVExporter(),
-            "json": JSONExporter(),
+            ".csv": CSVExporter(),
+            ".json": JSONExporter(),
         }
 
-        if exporter not in self._exporters:
-            raise ValueError(f"Unsupported exporter: {exporter}")
-
-        self.exporter = self._exporters[exporter]
-
     def export(self, domains, filename):
-        return self.exporter.export(domains, filename)
+
+        extension = os.path.splitext(filename)[1].lower()
+
+        exporter = self._exporters.get(extension)
+
+        if exporter is None:
+            raise ValueError(
+                f"Unsupported export format: {extension}"
+            )
+
+        return exporter.export(domains, filename)
